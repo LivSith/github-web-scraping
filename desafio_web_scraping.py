@@ -11,9 +11,10 @@ def sraping(repo):
 
     # traz todo o html print(soup.prettify())
 
-    temperatura = soup.find("span", class_="author flex-self-stretch")
-    result = temperatura
-        
+    repo_name = soup.find("span", class_="author flex-self-stretch")
+    total_lines = soup.find("span", class_="github-gloc")
+    result = repo_name
+    print(total_lines)
     return result
 
 
@@ -28,13 +29,19 @@ def read_txt():
 #print(sraping(read_txt()))
 
 
-def play():
+def main():
     repositorios = open("repositories.txt", "r")
     for repo in repositorios:
         print ('Web scraping do repositório: ', repo)
         print(sraping(read_txt())) #apenas chamar a função scraping
         print('Gravando dados na pasta resultados, do repositório: ', repo)
+        #teste saida txt
+        print("----------------")
+        print("Caminho relativo do projeto: ", repo)
+        print()
     
     return (print('Fim!'))
 
-print (play())
+
+if __name__ == '__main__':
+    main()
