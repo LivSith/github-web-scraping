@@ -6,9 +6,9 @@ import lxml
 import pandas as pd
 
 
-search_url = 'https://github.com/vivadecora/desafio-backend-trabalhe-conosco'
+search_url = 'https://github.com/frontpressorg/frontpress'
 base_url = 'https://github.com/'
-repo_url = 'vivadecora/desafio-backend-trabalhe-conosco'
+repo_url = 'frontpressorg/frontpress'
 
 
 data = {
@@ -16,11 +16,12 @@ data = {
         'URLs': [],
         'Type_of_file': [],
         'Linhas': [],
+        'Bytes': [],
     }
 
 def export_table_and_print(data):
     #cria tabela de resultado    
-    table = pd.DataFrame(data, columns=['Files', 'URLs', 'Type_of_file', 'Linhas'])
+    table = pd.DataFrame(data, columns=['Files', 'URLs', 'Type_of_file', 'Linhas', 'Bytes'])
     table.index = table.index + 1
     # cria pasta resultado
     dir = './resultados'
@@ -49,15 +50,20 @@ def get_repo_data(file):
     if new_page.status_code == requests.codes.ok:
         bs_repo = BeautifulSoup(new_page.text, 'lxml')
         
-        find_dados = bs_repo.find("div", class_="text-mono f6 flex-auto pr-3 flex-order-2 flex-md-order-1 mt-2 mt-md-0").text
+        if type_of_file == 'File':
+            find_dados = bs_repo.find("div", class_="text-mono f6 flex-auto pr-3 flex-order-2 flex-md-order-1 mt-2 mt-md-0").text
+            
+            dados_limpo = find_dados.lstrip()
+            dados_list = dados_limpo.split()
+            lines = float(dados_list[0])
+            size = float(dados_list[-2])
+            print('linhas: ', lines, "| tamanho: ", size)
+            data['Linhas'].append(lines if lines else '')
+            data['Bytes'].append(size if size else '')
         
-        dados_limpo = find_dados.lstrip()
-        dados_list = dados_limpo.split()
-        lines = dados_list[0]
-        size = dados_list[-2]
-        print('linhas: ', lines, "| tamanho: ", size)
-        data['Linhas'].append(lines if lines else '')
-
+        else:
+            data['Linhas'].append('')
+            data['Bytes'].append('')
 #def parse_page(next_url):
     
 # HTTP GET requests
